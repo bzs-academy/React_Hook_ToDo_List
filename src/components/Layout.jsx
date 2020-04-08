@@ -22,13 +22,18 @@ function Layout() {
     const submitHandler = e => {
         e.preventDefault();
 
+        const guncel = new Date().getTime();
+        // console.log(guncel);
+        const timeEvent = new Date(date).getTime();
+        const timeDiff = (timeEvent - guncel ) / 86400000; 
+
         setToDos([...toDos, {
             id: uuid(),
             todo,
             label,
             date,
             comment,
-            
+            timeDiff,
             done: false
         }])
         setTodo('')
@@ -55,8 +60,14 @@ function Layout() {
 
 
 
-    const doneHandler = () => {}
-    const deleteHandler = () => {}
+    const doneHandler = (elem) => {
+        setToDos( toDos.map( item => item.id === elem.id ? {...item, done: !item.done } : item))
+    }
+
+
+    const deleteHandler = (id) => {
+        setToDos(toDos.filter( item => item.id !== id))
+    }
     
 
 
@@ -74,19 +85,17 @@ function Layout() {
                                             <div className="todos-top">
                                                 <div className="label-box">{item.label}</div>
                                                 <div className="buttons"> 
-                                                    <span onClick={() => doneHandler(item)}>&#x2705;</span> 
-                                                    <span onClick={() => deleteHandler(item)}>&#x274C;</span> 
+                                                    <span role='img' aria-label="done" onClick={() => doneHandler(item)}>&#x2705;</span> 
+                                                    <span role='img' aria-label="delete" onClick={() => deleteHandler(item.id)}>&#x274C;</span> 
                                                 </div>
                                             </div>
                                             <div className="todos-bottom">
                                                 <div className="todo-box">{item.todo}</div>
                                                 <div className="date-comm">
-                                                    <div className={item.timeDiff > 1 ? "datebox bg-relax" : item.timeDiff > 0 ? "datebox bg-warn" : "datebox bg-past"} > &#x1F4C6;{item.date}</div>
+                                                    <div className={item.timeDiff > 1 ? "datebox bg-relax" : item.timeDiff > 0 ? "datebox bg-warn" : "datebox bg-past"} > <span role='img' aria-label="date">&#x1F4C6;</span>{item.date}</div>
                                                     <OverlayTrigger trigger="hover" placement="top" overlay={popoverBox (item.comment)}>
-                                                        <div className="comments">{item.comment ? <span>&#x1F4AC;</span> : null}</div>
+                                                        <div className="comments">{item.comment ? <span role='img' aria-label="comments">&#x1F4AC;</span> : null}</div>
                                                     </OverlayTrigger>
-
-
                                                 </div>
                                             </div>
                                         </div>
